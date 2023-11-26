@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css">
+    <title>Profile</title>
+</head>
+
+<body>
+    <nav class="navbar navbar-expand-lg navbar-dark bg-primary">
+        <div class="container-fluid">
+            <a class="navbar-brand" href="#">Guvi UK</a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav"
+                aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav">
+                    <li class="nav-item">
+                        <a class="nav-link" href="index.html">Home</a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+    <div class="container mt-5">
+        <h2>Profile</h2>
+        <div class="row">
+            <div class="col-md-6">
+                <h4>User Details</h4>
+                <p><strong>Name:</strong> John Doe</p>
+                <p><strong>Date of Birth:</strong> 1990-01-01</p>
+                <p><strong>Contact:</strong> 123-456-7890</p>
+                <p><strong>Age:</strong> 33</p>
+            </div>
+            <div class="col-md-6">
+                <h4>Update Profile</h4>
+                <form class="row g-3" id="updateProfileForm">
+                    <div class="col-md-6 mb-3">
+                        <label for="updateDob" class="form-label">Update Date of Birth</label>
+                        <input type="date" class="form-control" id="updateDob">
+                    </div>
+                    <div class="col-md-6 mb-3">
+                        <label for="updateContact" class="form-label">Update Contact</label>
+                        <input type="tel" class="form-control" id="updateContact" placeholder="123-456-7890">
+                    </div>
+                    <div class="col-md-6 mb-3">
+                        <label for="updateAge" class="form-label">Update Age</label>
+                        <input type="number" class="form-control" id="updateAge" placeholder="25">
+                    </div>
+                    <div class="col-12">
+                        <button type="submit" class="btn btn-primary">Update Profile</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.8/dist/umd/popper.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.min.js"></script>
+    <script src="./js/updateProfile.js"></script>
+</body>
+
+</html>
