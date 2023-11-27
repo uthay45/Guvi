@@ -1,5 +1,7 @@
 $(document).ready(function () {
-    $("#loginBtn").click(function () {
+    $("#loginBtn").click(function (event) {
+        event.preventDefault(); // Prevent the default form submission
+
         // Gather user input
         var username = $("#username").val();
         var password = $("#password").val();
@@ -12,11 +14,15 @@ $(document).ready(function () {
                 username: username,
                 password: password
             },
+            dataType: "json", // Expect JSON response
             success: function (response) {
-                if (response === "Login successful") {
-                    window.location.href = "profile.html"; // Redirect to profile page on success
+                if (response.success) {
+                    // Login successful, redirect to the profile page
+                    alert("Login successful!");
+                    window.location.href = "/Guvi/profile.html";
                 } else {
-                    alert(response); // You can handle the response as needed
+                    // Error logging in
+                    alert(response.error);
                 }
             },
             error: function (error) {

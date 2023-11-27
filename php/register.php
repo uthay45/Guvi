@@ -4,12 +4,10 @@ session_start();
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
     // Retrieve user input
     $name = $_POST['name'];
-    $password = password_hash($_POST['password'], PASSWORD_DEFAULT);
+    $hashedPassword = password_hash($_POST['password'], PASSWORD_DEFAULT);
     $dob = $_POST['dob'];
     $contact = $_POST['contact'];
     $age = $_POST['age'];
-
-    // You may want to perform additional validation and sanitation here
 
     // Example: Connecting to MySQL database
     $servername = "localhost";
@@ -26,7 +24,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
     // Prepare and bind the SQL statement
     $stmt = $conn->prepare("INSERT INTO users (username, pass, dob, contact, age) VALUES (?, ?, ?, ?, ?)");
-    $stmt->bind_param("ssssi", $name, $password, $dob, $contact, $age);
+    $stmt->bind_param("ssssi", $name, $hashedPassword, $dob, $contact, $age);
 
     // Execute the statement
     if ($stmt->execute()) {
@@ -36,7 +34,6 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             'dob' => $dob,
             'contact' => $contact,
             'age' => $age,
-            'password' => $password,
         ];
 
         echo json_encode(["success" => true]);

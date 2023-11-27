@@ -9,7 +9,7 @@ $(document).ready(function () {
         var contact = $("#contact").val();
         var age = $("#age").val();
 
-        // AJAX request
+      
         $.ajax({
             type: "POST",
             url: "./php/register.php",

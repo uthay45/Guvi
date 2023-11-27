@@ -1,20 +1,21 @@
-$(document).ready(function () {
-    // Function to fetch and display user details
-    function fetchUserDetails() {
-        $.ajax({
-            type: "GET",
-            url: "./php/profile.php",
-            dataType: "json", // Expect JSON response
-            success: function (data) {
-                // Update the user details on the page
-                updateProfileDetails(data);
-            },
-            error: function (error) {
-                console.log("Error fetching user details:", error);
-            }
-        });
-    }
+// Declare fetchUserDetails in the global scope
+function fetchUserDetails() {
+    $.ajax({
+        type: "GET",
+        url: "./php/profile.php",
+        dataType: "json", // Expect JSON response
+        success: function (data) {
+            // Update the user details on the page
+            updateProfileDetails(data);
+        },
+        error: function (error) {
+            console.log("Error fetching user details:", error);
+        }
+    });
+}
 
+// Wrap your code inside $(document).ready
+$(document).ready(function () {
     // Fetch and display user details when the page loads
     fetchUserDetails();
 

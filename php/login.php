@@ -2,46 +2,53 @@
 session_start();
 
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
-    // Retrieve values from the login form
-    $username = $_POST["username"];
-    $password = $_POST["password"];
+    // Retrieve user input
+    $username = $_POST['username'];
+    $plainPassword = $_POST['password'];
 
-    // Perform necessary validations
-
-    // Check the user credentials from MySQL (use prepared statements)
+    // Example: Connecting to MySQL database
     $servername = "localhost";
     $username_db = "root";
-    $dbpassword = "1234";
+    $dbpassword = "12345";
     $dbname = "guvi_projectdb";
 
     $conn = new mysqli($servername, $username_db, $dbpassword, $dbname);
 
+    // Check connection
     if ($conn->connect_error) {
         die("Connection failed: " . $conn->connect_error);
     }
-    
-    $stmt = $conn->prepare("SELECT * FROM users WHERE username = ?");
-    $stmt->bind_param("s", $username);
 
-    $stmt->execute();
-    $result = $stmt->get_result();
+    // Retrieve the hashed password from the database
+    $stmt_auth = $conn->prepare("SELECT pass FROM users WHERE username = ?");
+    $stmt_auth->bind_param("s", $username);
 
-    if ($result->num_rows > 0) {
-        // User found, verify the password
-        $row = $result->fetch_assoc();
-        if (password_verify($password, $row['pass'])) {
-            // Password is correct, set session and redirect to profile page
-            $_SESSION['userDetails'] = ['username' => $username, 'password' => $row['pass']];
-            header("Location: /Guvi/profile.html");
-            exit();
+    $stmt_auth->execute();
+    $result_auth = $stmt_auth->get_result();
+
+    if ($result_auth->num_rows > 0) {
+        $hashedPassword = $result_auth->fetch_assoc()['pass'];
+
+        // Verify the password
+        if (password_verify($plainPassword, $hashedPassword)) {
+            // Authentication successful, set session data
+            $_SESSION['userDetails'] = [
+                'username' => $username,
+                'password' => $hashedPassword, // Store the hashed password
+            ];
+
+            echo json_encode(["success" => true]);
         } else {
-            echo "Invalid password";
+            // Authentication failed
+            echo json_encode(["success" => false, "error" => "Incorrect password"]);
         }
     } else {
-        echo "Invalid username";
+        // User not found
+        echo json_encode(["success" => false, "error" => "User not found"]);
     }
 
-    $stmt->close();
+    // Close the statement and connection
+    $stmt_auth->close();
     $conn->close();
 }
 ?>
