@@ -1,8 +1,7 @@
 $(document).ready(function () {
     $("#registerBtn").click(function (event) {
-        event.preventDefault(); // Prevent the default form submission
+        event.preventDefault(); 
 
-        // Gather user input
         var name = $("#name").val();
         var password = $("#password").val();
         var dob = $("#dob").val();
@@ -20,14 +19,12 @@ $(document).ready(function () {
                 contact: contact,
                 age: age
             },
-            dataType: "json", // Expect JSON response
+            dataType: "json",
             success: function (response) {
                 if (response.success) {
-                    // Registration successful, redirect to the profile page
                     alert("Registration successful!");
                     window.location.href = "/Guvi/profile.html";
                 } else {
-                    // Error registering user
                     alert(response.error);
                 }
             },

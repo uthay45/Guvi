@@ -1,11 +1,10 @@
-// Declare fetchUserDetails in the global scope
+
 function fetchUserDetails() {
     $.ajax({
         type: "GET",
         url: "./php/profile.php",
-        dataType: "json", // Expect JSON response
+        dataType: "json", 
         success: function (data) {
-            // Update the user details on the page
             updateProfileDetails(data);
         },
         error: function (error) {
@@ -15,16 +14,13 @@ function fetchUserDetails() {
 }
 
 function updateProfileDetails(userDetails) {
-    // Check for errors
     if (userDetails.hasOwnProperty('error')) {
         console.log("Error:", userDetails.error);
         return;
     }
 
-    // Update the HTML elements with user details
     $("#username").text(userDetails.username);
 
-    // Check if data is received before updating elements
     if (userDetails.hasOwnProperty('dob')) {
         $("#dob").text(userDetails.dob);
     }
@@ -38,23 +34,16 @@ function updateProfileDetails(userDetails) {
     }
 }
 
-// Wrap your code inside $(document).ready
 $(document).ready(function () {
-    // Fetch and display user details when the page loads
     fetchUserDetails();
 
-    // Handle profile update form submission
     $("#updateProfileForm").submit(function (event) {
         event.preventDefault();
 
-        // Get the values from the form
         var updateDob = $("#updateDob").val();
         var updateContact = $("#updateContact").val();
         var updateAge = $("#updateAge").val();
 
-        // Perform validation if needed
-
-        // Send the update request to the server
         $.ajax({
             type: "POST",
             url: "./php/profile.php",
@@ -63,12 +52,9 @@ $(document).ready(function () {
                 updateContact: updateContact,
                 updateAge: updateAge
             },
-            dataType: "json", // Expect JSON response
+            dataType: "json",
             success: function (data) {
-                // Update the user details on the page
                 updateProfileDetails(data);
-
-                // Clear the form fields
                 $("#updateDob").val('');
                 $("#updateContact").val('');
                 $("#updateAge").val('');
@@ -80,7 +66,5 @@ $(document).ready(function () {
             }
         });
     });
-
-    // Function to update the user details on the page
     
 });
