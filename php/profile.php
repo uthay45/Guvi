@@ -8,7 +8,7 @@ if (isset($_SESSION['userDetails'])) {
     // Example: Connecting to MySQL database
     $servername = "localhost";
     $username_db = "root";
-    $dbpassword = "12345";
+    $dbpassword = "";
     $dbname = "guvi_projectdb";
 
     $conn = new mysqli($servername, $username_db, $dbpassword, $dbname);
@@ -27,9 +27,12 @@ if (isset($_SESSION['userDetails'])) {
 
         if ($result->num_rows > 0) {
             $userDetails = $result->fetch_assoc();
-            // Return user details without checking password for GET request
+            // Output JSON response
+            header('Content-Type: application/json');
             echo json_encode($userDetails);
         } else {
+            // Output JSON response for user not found
+            header('Content-Type: application/json');
             echo json_encode(['error' => 'User not found']);
         }
 
@@ -40,35 +43,76 @@ if (isset($_SESSION['userDetails'])) {
         $updateContact = $_POST["updateContact"];
         $updateAge = $_POST["updateAge"];
 
-        // Update user profile
-        $stmt_update = $conn->prepare("UPDATE users SET dob = ?, contact = ?, age = ? WHERE username = ?");
-        $stmt_update->bind_param("ssss", $updateDob, $updateContact, $updateAge, $username);
+        // Build the update query based on provided fields
+        $updateFields = [];
+        $paramTypes = "";
+        $paramValues = [];
 
-        // Execute the statement
-        if ($stmt_update->execute()) {
-            // If update is successful, fetch and return updated user details
-            $stmt_select = $conn->prepare("SELECT * FROM users WHERE username = ?");
-            $stmt_select->bind_param("s", $username);
-            $stmt_select->execute();
-            $result = $stmt_select->get_result();
-
-            if ($result->num_rows > 0) {
-                $userDetails = $result->fetch_assoc();
-                echo json_encode($userDetails);
-            } else {
-                echo json_encode(['error' => 'User not found']);
-            }
-
-            $stmt_select->close();
-        } else {
-            echo json_encode(['error' => 'Error updating profile']);
+        if (!empty($updateDob)) {
+            $updateFields[] = "dob = ?";
+            $paramTypes .= "s";
+            $paramValues[] = $updateDob;
         }
 
-        $stmt_update->close();
+        if (!empty($updateContact)) {
+            $updateFields[] = "contact = ?";
+            $paramTypes .= "s";
+            $paramValues[] = $updateContact;
+        }
+
+        if (!empty($updateAge)) {
+            $updateFields[] = "age = ?";
+            $paramTypes .= "s";
+            $paramValues[] = $updateAge;
+        }
+
+        // Check if any fields are provided for update
+        if (!empty($updateFields)) {
+            // Update user profile
+            $updateQuery = "UPDATE users SET " . implode(", ", $updateFields) . " WHERE username = ?";
+            $stmt_update = $conn->prepare($updateQuery);
+            $paramTypes .= "s";
+            $paramValues[] = $username;
+            $stmt_update->bind_param($paramTypes, ...$paramValues);
+
+            // Execute the statement
+            if ($stmt_update->execute()) {
+                // If update is successful, fetch and return updated user details
+                $stmt_select = $conn->prepare("SELECT * FROM users WHERE username = ?");
+                $stmt_select->bind_param("s", $username);
+                $stmt_select->execute();
+                $result = $stmt_select->get_result();
+
+                if ($result->num_rows > 0) {
+                    $userDetails = $result->fetch_assoc();
+                    // Output JSON response
+                    header('Content-Type: application/json');
+                    echo json_encode($userDetails);
+                } else {
+                    // Output JSON response for user not found
+                    header('Content-Type: application/json');
+                    echo json_encode(['error' => 'User not found']);
+                }
+
+                $stmt_select->close();
+            } else {
+                // Output JSON response for update error
+                header('Content-Type: application/json');
+                echo json_encode(['error' => 'Error updating profile']);
+            }
+
+            $stmt_update->close();
+        } else {
+            // Output JSON response if no fields are provided for update
+            header('Content-Type: application/json');
+            echo json_encode(['error' => 'No fields provided for update']);
+        }
     }
 
     $conn->close();
 } else {
+    // Output JSON response for user not authenticated
+    header('Content-Type: application/json');
     echo json_encode(['error' => 'User not authenticated']);
 }
 ?>

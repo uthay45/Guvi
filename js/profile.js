@@ -14,6 +14,30 @@ function fetchUserDetails() {
     });
 }
 
+function updateProfileDetails(userDetails) {
+    // Check for errors
+    if (userDetails.hasOwnProperty('error')) {
+        console.log("Error:", userDetails.error);
+        return;
+    }
+
+    // Update the HTML elements with user details
+    $("#username").text(userDetails.username);
+
+    // Check if data is received before updating elements
+    if (userDetails.hasOwnProperty('dob')) {
+        $("#dob").text(userDetails.dob);
+    }
+
+    if (userDetails.hasOwnProperty('contact')) {
+        $("#contact").text(userDetails.contact);
+    }
+
+    if (userDetails.hasOwnProperty('age')) {
+        $("#age").text(userDetails.age);
+    }
+}
+
 // Wrap your code inside $(document).ready
 $(document).ready(function () {
     // Fetch and display user details when the page loads
@@ -43,6 +67,11 @@ $(document).ready(function () {
             success: function (data) {
                 // Update the user details on the page
                 updateProfileDetails(data);
+
+                // Clear the form fields
+                $("#updateDob").val('');
+                $("#updateContact").val('');
+                $("#updateAge").val('');
             },
             error: function (xhr, status, error) {
                 console.log("Error updating/fetching profile:", xhr.responseText);
@@ -53,17 +82,5 @@ $(document).ready(function () {
     });
 
     // Function to update the user details on the page
-    function updateProfileDetails(userDetails) {
-        // Check for errors
-        if (userDetails.hasOwnProperty('error')) {
-            console.log("Error:", userDetails.error);
-            return;
-        }
-
-        // Update the HTML elements with user details
-        $("#username").text(userDetails.username);
-        $("#dob").text(userDetails.dob);
-        $("#contact").text(userDetails.contact);
-        $("#age").text(userDetails.age);
-    }
+    
 });
