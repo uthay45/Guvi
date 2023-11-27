@@ -1,4 +1,6 @@
 <?php
+session_start();
+
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
     // Retrieve user input
     $name = $_POST['name'];
@@ -12,7 +14,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     // Example: Connecting to MySQL database
     $servername = "localhost";
     $username = "root";
-    $mysql_password = "1234";
+    $mysql_password = "12345";
     $dbname = "guvi_projectdb";
 
     $conn = new mysqli($servername, $username, $mysql_password, $dbname);
@@ -28,9 +30,19 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
     // Execute the statement
     if ($stmt->execute()) {
-        echo "Registration successful!";
+        // Registration successful, set session data
+        $_SESSION['userDetails'] = [
+            'username' => $name,
+            'dob' => $dob,
+            'contact' => $contact,
+            'age' => $age,
+            'password' => $password,
+        ];
+
+        echo json_encode(["success" => true]);
     } else {
-        echo "Error registering user: " . $stmt->error;
+        // Error registering user
+        echo json_encode(["success" => false, "error" => "Error registering user: " . $stmt->error]);
     }
 
     // Close the statement and connection

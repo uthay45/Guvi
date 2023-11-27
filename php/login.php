@@ -1,4 +1,6 @@
 <?php
+session_start();
+
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
     // Retrieve values from the login form
     $username = $_POST["username"];
@@ -28,7 +30,8 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         // User found, verify the password
         $row = $result->fetch_assoc();
         if (password_verify($password, $row['pass'])) {
-            // Password is correct, redirect to profile page
+            // Password is correct, set session and redirect to profile page
+            $_SESSION['userDetails'] = ['username' => $username, 'password' => $row['pass']];
             header("Location: /Guvi/profile.html");
             exit();
         } else {
